@@ -496,3 +496,4 @@ export function tick(m: Match, now = Date.now()): Match {
   n.revision++;
   return n;
 }
+export * from "./versions";

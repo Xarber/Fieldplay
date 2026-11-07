@@ -98,6 +98,7 @@ export function makeServer(
           ".css": "text/css",
           ".webmanifest": "application/manifest+json",
           ".png": "image/png",
+          ".svg": "image/svg+xml",
           ".ttf": "font/ttf",
           ".ico": "image/x-icon",
           ".gz": "application/gzip",
