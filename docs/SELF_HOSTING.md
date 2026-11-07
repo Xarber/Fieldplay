@@ -10,7 +10,7 @@ X-Center is the mandatory default target. Do not move Fieldplay to a third-party
 ssh -N -L 18787:127.0.0.1:18787 YOUR_XCENTER_HOST
 ```
 
-Then open `http://localhost:18787/welcome/` or the app at `http://localhost:18787/`. The tunnel provides authenticated encrypted transport, and browsers permit location/WebRTC on localhost. Each remote device needs an appropriate trusted access route; no public mobile access is implied by this loopback deployment.
+Then open `http://localhost:18787/welcome/` or the first-visit landing/app at `http://localhost:18787/`. The tunnel provides authenticated encrypted transport, and browsers permit location/WebRTC on localhost. Each remote device needs an appropriate trusted access route; no public mobile access is implied by this loopback deployment.
 
 The runtime payload includes compiled server, the production PWA/landing, LICENSE, an original-source archive and a source commit identifier. The original ideas collection is deliberately excluded from distributable source archives because it can contain private feedback rather than program source. Node runs as an unprivileged container user. Host Node 18 is not upgraded or used for this Node 24 service.
 
