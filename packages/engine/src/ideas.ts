@@ -1,14 +1,156 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import {z} from 'zod';
-const uid=()=>globalThis.crypto.randomUUID();
-export const ideaStatuses=['pending','approved','deferred','in-progress','implemented','rejected'] as const;
-export const ideaCategories=['Feature','Improvement','Bug Fix','UI/UX','Performance','Other'] as const;
-export const ideaSchema=z.object({id:z.string().min(8).max(100),title:z.string().trim().min(1).max(160),description:z.string().max(10000),reproduction:z.string().max(10000).default(''),category:z.enum(ideaCategories),priority:z.enum(['low','normal','high']),status:z.enum(ideaStatuses),createdAt:z.string().datetime(),modifiedAt:z.string().datetime(),implementation:z.string().max(3000).default(''),release:z.string().max(80).default(''),screenshot:z.string().max(700000).refine(s=>!s||/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s),'Screenshot must be a supported embedded image.').default(''),history:z.array(z.object({at:z.string().datetime(),status:z.enum(ideaStatuses)})).max(1000).default([])});
-export type Idea=z.infer<typeof ideaSchema>;
-export const ideaExportSchema=z.object({schemaVersion:z.literal(1),projectId:z.literal('it.xarber.fieldplay'),exportedAt:z.string().datetime(),ideas:z.array(ideaSchema).max(1000)}).superRefine((v,ctx)=>{if(new Set(v.ideas.map(i=>i.id)).size!==v.ideas.length)ctx.addIssue({code:'custom',message:'Duplicate IDs in import.'});});
-export function exportIdeas(ideas:Idea[]){return ideaExportSchema.parse({schemaVersion:1,projectId:'it.xarber.fieldplay',exportedAt:new Date().toISOString(),ideas});}
-export function previewImport(current:Idea[],raw:unknown){const imported=ideaExportSchema.parse(raw);const existing=new Map(current.map(i=>[i.id,i]));return {additions:imported.ideas.filter(i=>!existing.has(i.id)),conflicts:imported.ideas.filter(i=>existing.has(i.id)&&JSON.stringify(i)!==JSON.stringify(existing.get(i.id))),duplicates:imported.ideas.filter(i=>existing.has(i.id)&&JSON.stringify(i)===JSON.stringify(existing.get(i.id))).length};}
-export function mergeIdeas(current:Idea[],preview:ReturnType<typeof previewImport>,replaceIds:string[]=[]){const replacements=new Map(preview.conflicts.filter(i=>replaceIds.includes(i.id)).map(i=>[i.id,i]));return [...current.map(i=>{const incoming=replacements.get(i.id);return incoming?{...incoming,history:[...i.history,...incoming.history].filter((h,j,a)=>a.findIndex(x=>x.at===h.at&&x.status===h.status)===j).slice(-1000)}:i;}),...preview.additions];}
-export function newIdea():Idea{const at=new Date().toISOString();return {id:uid(),title:'',description:'',reproduction:'',category:'Feature',priority:'normal',status:'pending',createdAt:at,modifiedAt:at,implementation:'',release:'',screenshot:'',history:[{at,status:'pending'}]};}
-export function changeIdea(idea:Idea,changes:Partial<Idea>):Idea{const now=new Date().toISOString();return ideaSchema.parse({...idea,...changes,id:idea.id,createdAt:idea.createdAt,modifiedAt:now,history:changes.status&&changes.status!==idea.status?[...idea.history,{at:now,status:changes.status}]:idea.history});}
-export function ideasMarkdown(ideas:Idea[]){return `# Fieldplay developer ideas\n\n`+ideas.map(i=>`## ${i.title}\n\n${i.category} · ${i.priority} · ${i.status}\n\n${i.description}\n\n${i.reproduction?`Reproduction: ${i.reproduction}\n\n`:''}ID: ${i.id}\nUpdated: ${i.modifiedAt}\nImplementation: ${i.implementation||'—'}\nRelease: ${i.release||'—'}\n`).join('\n');}
+import { z } from "zod";
+import { uid } from "./random";
+export const ideaStatuses = [
+  "pending",
+  "approved",
+  "deferred",
+  "in-progress",
+  "implemented",
+  "rejected",
+] as const;
+export const ideaCategories = [
+  "Feature",
+  "Improvement",
+  "Bug Fix",
+  "UI/UX",
+  "Performance",
+  "Other",
+] as const;
+export const ideaSchema = z.object({
+  id: z.string().min(8).max(100),
+  title: z.string().trim().min(1).max(160),
+  description: z.string().max(10000),
+  reproduction: z.string().max(10000).default(""),
+  category: z.enum(ideaCategories),
+  priority: z.enum(["low", "normal", "high"]),
+  status: z.enum(ideaStatuses),
+  createdAt: z.string().datetime(),
+  modifiedAt: z.string().datetime(),
+  implementation: z.string().max(3000).default(""),
+  release: z.string().max(80).default(""),
+  screenshot: z
+    .string()
+    .max(700000)
+    .refine(
+      (s) =>
+        !s || /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(s),
+      "Screenshot must be a supported embedded image.",
+    )
+    .default(""),
+  history: z
+    .array(
+      z.object({ at: z.string().datetime(), status: z.enum(ideaStatuses) }),
+    )
+    .max(1000)
+    .default([]),
+});
+export type Idea = z.infer<typeof ideaSchema>;
+export const ideaExportSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    projectId: z.literal("it.xarber.fieldplay"),
+    exportedAt: z.string().datetime(),
+    ideas: z.array(ideaSchema).max(1000),
+  })
+  .superRefine((v, ctx) => {
+    if (new Set(v.ideas.map((i) => i.id)).size !== v.ideas.length)
+      ctx.addIssue({ code: "custom", message: "Duplicate IDs in import." });
+  });
+export function exportIdeas(ideas: Idea[]) {
+  return ideaExportSchema.parse({
+    schemaVersion: 1,
+    projectId: "it.xarber.fieldplay",
+    exportedAt: new Date().toISOString(),
+    ideas,
+  });
+}
+export function previewImport(current: Idea[], raw: unknown) {
+  const imported = ideaExportSchema.parse(raw);
+  const existing = new Map(current.map((i) => [i.id, i]));
+  return {
+    additions: imported.ideas.filter((i) => !existing.has(i.id)),
+    conflicts: imported.ideas.filter(
+      (i) =>
+        existing.has(i.id) &&
+        JSON.stringify(i) !== JSON.stringify(existing.get(i.id)),
+    ),
+    duplicates: imported.ideas.filter(
+      (i) =>
+        existing.has(i.id) &&
+        JSON.stringify(i) === JSON.stringify(existing.get(i.id)),
+    ).length,
+  };
+}
+export function mergeIdeas(
+  current: Idea[],
+  preview: ReturnType<typeof previewImport>,
+  replaceIds: string[] = [],
+) {
+  const replacements = new Map(
+    preview.conflicts
+      .filter((i) => replaceIds.includes(i.id))
+      .map((i) => [i.id, i]),
+  );
+  return [
+    ...current.map((i) => {
+      const incoming = replacements.get(i.id);
+      return incoming
+        ? {
+            ...incoming,
+            history: [...i.history, ...incoming.history]
+              .filter(
+                (h, j, a) =>
+                  a.findIndex((x) => x.at === h.at && x.status === h.status) ===
+                  j,
+              )
+              .slice(-1000),
+          }
+        : i;
+    }),
+    ...preview.additions,
+  ];
+}
+export function newIdea(): Idea {
+  const at = new Date().toISOString();
+  return {
+    id: uid(),
+    title: "",
+    description: "",
+    reproduction: "",
+    category: "Feature",
+    priority: "normal",
+    status: "pending",
+    createdAt: at,
+    modifiedAt: at,
+    implementation: "",
+    release: "",
+    screenshot: "",
+    history: [{ at, status: "pending" }],
+  };
+}
+export function changeIdea(idea: Idea, changes: Partial<Idea>): Idea {
+  const now = new Date().toISOString();
+  return ideaSchema.parse({
+    ...idea,
+    ...changes,
+    id: idea.id,
+    createdAt: idea.createdAt,
+    modifiedAt: now,
+    history:
+      changes.status && changes.status !== idea.status
+        ? [...idea.history, { at: now, status: changes.status }]
+        : idea.history,
+  });
+}
+export function ideasMarkdown(ideas: Idea[]) {
+  return (
+    `# Fieldplay developer ideas\n\n` +
+    ideas
+      .map(
+        (i) =>
+          `## ${i.title}\n\n${i.category} · ${i.priority} · ${i.status}\n\n${i.description}\n\n${i.reproduction ? `Reproduction: ${i.reproduction}\n\n` : ""}ID: ${i.id}\nUpdated: ${i.modifiedAt}\nImplementation: ${i.implementation || "—"}\nRelease: ${i.release || "—"}\n`,
+      )
+      .join("\n")
+  );
+}
