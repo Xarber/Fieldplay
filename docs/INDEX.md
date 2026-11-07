@@ -13,6 +13,7 @@ Start with [current features and gaps](FEATURES.md), [architecture](ARCHITECTURE
 - [Release/build process](RELEASES.md)
 - [Testing](TESTING.md)
 - [Self-hosting](SELF_HOSTING.md)
+- [Private X-Center deployment evidence](reports/XCENTER_DEPLOYMENT.md)
 - [Branding](BRANDING.md)
 - [Motion and accessible materials](features/MOTION.md)
 - [Current UADS adoption](UADS_ADOPTION.md)

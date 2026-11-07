@@ -7,7 +7,7 @@ This roadmap preserves the wider specification without presenting unfinished fea
 1. Build all four native artifacts with the approved Android signing identity; resolve any SDK 58/WebRTC/MapLibre/native-module compatibility failures.
 2. Install on physical iOS and Android devices. Complete an outdoor Treasure Hunt and verify background/foreground safety pauses, real GPS uncertainty, reconnection, map loading, QR scanning, permissions, data persistence, battery and accessibility.
 3. Verify different-network WebRTC, owned STUN, TURN and relay-only mode; measure real latency and disconnect behavior.
-4. Complete the Docker/X-Center staged deployment checks and record actual commit/health/handshake evidence. Preserve unrelated infrastructure.
+4. Maintain the verified private X-Center deployment and rollback artifacts. Any broader/public access requires explicit authorization and appropriate TLS/access-control validation; preserve unrelated infrastructure.
 5. Exercise Android self-update with real old/new same-key packages, wrong checksum/signature/build rejection, network interruption, cancellation, system permission denial and actual install results. Validate iOS's authorized signing/update path.
 6. Review the name collision, dependency/native-binary/asset licenses and AGPL source availability for the intended audience; obtain explicit public/store/channel authorization.
 7. Resolve build-tool audit findings without blindly downgrading/upgrading the SDK; keep the exact tested package lock.

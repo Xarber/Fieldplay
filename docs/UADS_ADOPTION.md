@@ -5,7 +5,7 @@ The active global `/Users/xarber/.codex/AGENTS.md` was reread, including the new
 | New requirement | Fieldplay application | Evidence / remaining validation |
 |---|---|---|
 | Mandatory web version and distinct landing | Shared Expo Web/PWA at `/`; responsive product page at `/welcome/` with real app screenshot, platform/install status, source/privacy/docs and service check | Production/browser landing, actual service check, light/dark and reduced-motion checks passed; native downloads honestly unavailable |
-| X-Center default hosting | Existing X-Center selected; isolated runtime/Compose configuration binds only loopback, with resource limits and health check | Read-only inventory confirmed existing Docker; no public DNS/proxy or unrelated service changes authorized |
+| X-Center default hosting | Private runtime deployed on existing X-Center; Compose binds only loopback, with resource limits and health check | Staging and deployed two-client smoke checks passed; all 14 existing services retained their IDs/start times. See [deployment evidence](reports/XCENTER_DEPLOYMENT.md) |
 | Repository continuity | Reuse the existing `Xarber/Fieldplay`, preserve testing/beta/main and all history | Only the exact intended repository was checked; no similar-name repository search |
 | Hardware-backed signing preference | Original hardware signing configuration preserved; unavailable key permits unsigned development commits | No alternate key, automatic rebase or force-push |
 | Design guidance and Apple principles | Applied installed Apple/design-engineering/Expo motion guidance to shared controls, sheets, typography and materials | UI runtime tests do not establish physical-device animation quality |
