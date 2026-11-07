@@ -12,3 +12,4 @@ apps/mobile/android/
 artifacts/
 .DS_Store
 runtime/
+apps/mobile/src/generated/commits.json

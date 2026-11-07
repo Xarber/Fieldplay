@@ -1,0 +1,6 @@
+node_modules/
+artifacts/
+apps/mobile/dist/
+apps/mobile/android/
+apps/mobile/ios/
+package-lock.json

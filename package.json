@@ -16,14 +16,25 @@
     "test": "tsx --test tests/*.test.ts",
     "test:browser": "tsx scripts/browser-test.ts",
     "web:build": "npm run web:build -w @fieldplay/mobile",
-    "check": "npm run typecheck && npm test"
+    "check": "npm run typecheck && npm test",
+    "test:unit": "tsx --test tests/engine.test.ts tests/ideas.test.ts tests/multiplayer.test.ts tests/versions.test.ts",
+    "test:team": "tsx --test tests/team-multiplayer.test.ts",
+    "branding": "tsx scripts/branding.ts",
+    "preview": "tsx scripts/static-server.ts",
+    "format": "prettier --write apps/mobile/app apps/mobile/src packages services scripts tests",
+    "pretypecheck": "tsx scripts/build-context.ts",
+    "test:design": "tsx scripts/design-test.ts",
+    "package:runtime": "tsx scripts/package-runtime.ts"
   },
   "devDependencies": {
     "@types/geojson": "^7946.0.16",
     "@types/node": "^24.10.0",
     "@types/react": "^19.3.0",
+    "@types/semver": "^7.8.0",
     "@types/ws": "^8.18.1",
+    "esbuild": "^0.28.2",
     "playwright-core": "^1.65.0",
+    "prettier": "^3.9.10",
     "sharp": "^0.35.5",
     "tsx": "^4.20.6",
     "typescript": "~5.9.3"
