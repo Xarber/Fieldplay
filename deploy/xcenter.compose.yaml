@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     ports: ["127.0.0.1:18787:8787"]
     environment:
-      ALLOWED_ORIGINS: http://localhost:18787,http://127.0.0.1:18787
+      ALLOWED_ORIGINS: https://fieldplay.xcenter.it,http://localhost:18787,http://127.0.0.1:18787
       ICE_SERVERS: "[]"
     read_only: true
     tmpfs: ["/tmp:size=16m"]

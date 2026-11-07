@@ -1,3 +1,11 @@
+# Authorized public web hosting
+
+The user authorized `https://fieldplay.xcenter.it` on 2026-11-07. The existing wildcard DNS and TLS certificate were verified. A dedicated Nginx virtual host proxies HTTPS and WebSocket traffic to the loopback-only Fieldplay service; HTTP redirects to HTTPS. Repository visibility remains private. No native releases or other public channels were authorized.
+
+Public verification passed for commit `cbc06848dfd3e9f7fdae1a568cccd00eec1e7693`: app/landing/PWA assets, actual authenticated two-client handshake/chat/start/safety pause/end, and Chromium first-visit/entry/persistence/history/invitation checks. No GPS collected. Nginx configuration validation passed before graceful reload; only Fieldplay was recreated to allow its public browser origin. Existing certificate and DNS were reused, without credential changes.
+
+Rollback: remove only `039-fieldplay-xcenter-it.conf` from the included Nginx directory, validate/reload Nginx, and restore Fieldplay's `compose.private-backup.yaml` if withdrawing public access. Previous runtime images remain available. Source archive remains served under `/source.tar.gz` for AGPL access; private idea data is excluded.
+
 # Self-hosting on X-Center
 
 X-Center is the mandatory default target. Do not move Fieldplay to a third-party host merely for convenience. The server is an independent service; it does not depend on Pathway or an existing game platform.
