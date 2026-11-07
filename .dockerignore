@@ -1,0 +1,13 @@
+.git
+node_modules
+**/node_modules
+artifacts
+apps/mobile/dist
+apps/mobile/ios
+apps/mobile/android
+**/.expo
+.env
+.env.*
+!.env.example
+*.log
+runtime

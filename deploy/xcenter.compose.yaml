@@ -1,0 +1,17 @@
+name: fieldplay-private
+services:
+  fieldplay:
+    image: fieldplay:${FIELDPLAY_COMMIT:?Set the verified source commit}
+    container_name: fieldplay-private
+    restart: unless-stopped
+    ports: ["127.0.0.1:18787:8787"]
+    environment:
+      ALLOWED_ORIGINS: http://localhost:18787,http://127.0.0.1:18787
+      ICE_SERVERS: "[]"
+    read_only: true
+    tmpfs: ["/tmp:size=16m"]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 128
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]

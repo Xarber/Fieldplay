@@ -1,0 +1,56 @@
+name: fieldplay
+services:
+  fieldplay:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
+      args:
+        BUILD_COMMIT: ${BUILD_COMMIT:-development}
+    environment:
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://fieldplay.example.invalid}
+      ICE_SERVERS: ${ICE_SERVERS:-[]}
+      TURN_URLS: ${TURN_URLS:-}
+      TURN_SECRET: ${TURN_SECRET:-}
+    ports:
+      - "127.0.0.1:8787:8787"
+    restart: unless-stopped
+    read_only: true
+    tmpfs: ["/tmp:size=16m"]
+    mem_limit: 512m
+    cpus: 1
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+  tls:
+    image: caddy:2.11.9-alpine
+    profiles: [tls]
+    environment:
+      FIELDPLAY_DOMAIN: ${FIELDPLAY_DOMAIN:-fieldplay.example.invalid}
+    ports: ["443:443", "443:443/udp", "80:80"]
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      fieldplay:
+        condition: service_healthy
+    restart: unless-stopped
+    mem_limit: 128m
+    cpus: 0.5
+  turn:
+    image: coturn/coturn:4.18.0-r0
+    profiles: [turn]
+    environment:
+      TURN_SECRET: ${TURN_SECRET:-}
+      TURN_EXTERNAL_IP: ${TURN_EXTERNAL_IP:-127.0.0.1}
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        test -n "$$TURN_SECRET" || { echo "Configure TURN_SECRET before enabling the TURN profile."; exit 1; }
+        exec turnserver --no-cli --no-tls --no-dtls --fingerprint --use-auth-secret --static-auth-secret="$$TURN_SECRET" --realm=fieldplay --min-port=49160 --max-port=49200 --external-ip="$$TURN_EXTERNAL_IP" --user-quota=4 --total-quota=80 --no-multicast-peers --denied-peer-ip=127.0.0.0-127.255.255.255 --denied-peer-ip=169.254.0.0-169.254.255.255 --denied-peer-ip=10.0.0.0-10.255.255.255 --denied-peer-ip=192.168.0.0-192.168.255.255 --denied-peer-ip=172.16.0.0-172.31.255.255
+    ports: ["3478:3478", "3478:3478/udp", "49160-49200:49160-49200/udp"]
+    restart: unless-stopped
+    mem_limit: 256m
+    cpus: 0.5
+volumes:
+  caddy_data:
+  caddy_config:

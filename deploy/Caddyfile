@@ -1,0 +1,9 @@
+{$FIELDPLAY_DOMAIN} {
+  encode zstd gzip
+  header {
+    X-Content-Type-Options nosniff
+    Referrer-Policy no-referrer
+    Permissions-Policy "camera=(self), geolocation=(self), microphone=()"
+  }
+  reverse_proxy fieldplay:8787
+}
