@@ -22,3 +22,5 @@ Start with [current features and gaps](FEATURES.md), [architecture](ARCHITECTURE
 - [Roadmap and acceptance gaps](ROADMAP.md)
 - [Architecture decisions](decisions/0001-authority-and-privacy.md)
 - [Repository ideas collection](IDEAS.json)
+
+- [Cena con delitto](features/MYSTERY.md)

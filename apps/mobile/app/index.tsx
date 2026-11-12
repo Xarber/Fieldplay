@@ -29,6 +29,7 @@ import {
   type IconName,
 } from "../src/components/ui";
 import Home, { ModeCard } from "../src/screens/Home";
+import Mystery from "../src/screens/Mystery";
 import Party from "../src/screens/Party";
 import Profile from "../src/screens/Profile";
 import Scanner from "../src/components/Scanner";
@@ -546,8 +547,9 @@ export default function App() {
                     One map. So many possibilities.
                   </Txt>
                   <Txt color={t.muted}>
-                    Four adventures built around the world outside.
+                    Adventures outdoors and around the table.
                   </Txt>
+                  <Mystery />
                   <Field
                     label="Find a game"
                     placeholder="Treasure, stealth, territory…"
