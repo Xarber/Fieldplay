@@ -2,6 +2,10 @@ name: Validate and build Fieldplay
 on:
   workflow_dispatch:
     inputs:
+      ios_only:
+        description: Build the two iOS artifacts without Android signing
+        type: boolean
+        default: false
       mobile:
         description: Build all four native formats (requires release signing secrets and runner budget)
         type: boolean
@@ -31,7 +35,7 @@ jobs:
       - run: npm run check
       - run: npm run web:build
       - name: Browser gameplay and PWA checks
-        run: npm run test:browser && npm run test:design
+        run: npm run test:browser && npm run test:design && npx tsx scripts/mystery-test.ts
         env:
           CHROME_PATH: /usr/bin/google-chrome
       - name: Validate native configuration without installing toolchains
@@ -52,7 +56,7 @@ jobs:
             apps/mobile/dist
           retention-days: 14
   ios:
-    if: github.event_name == 'push' || inputs.mobile
+    if: github.event_name == 'push' || inputs.mobile || inputs.ios_only
     runs-on: macos-latest
     timeout-minutes: 60
     strategy:
@@ -60,6 +64,8 @@ jobs:
       matrix:
         variant: [unsigned, simulator]
     env:
+      EXPO_PUBLIC_FIELDPLAY_PRODUCTION: "1"
+      EXPO_PUBLIC_SIGNAL_URL: wss://fieldplay.xcenter.it
       BUILD_COMMIT: ${{ github.sha }}
       BUILD_NUMBER: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.ref_name == 'main' && 'stable' || github.ref_name == 'beta' && 'beta' || 'testing' }}
@@ -93,6 +99,8 @@ jobs:
       matrix:
         format: [apk, aab]
     env:
+      EXPO_PUBLIC_FIELDPLAY_PRODUCTION: "1"
+      EXPO_PUBLIC_SIGNAL_URL: wss://fieldplay.xcenter.it
       BUILD_COMMIT: ${{ github.sha }}
       BUILD_NUMBER: ${{ github.run_number }}
       RELEASE_CHANNEL: ${{ github.ref_name == 'main' && 'stable' || github.ref_name == 'beta' && 'beta' || 'testing' }}

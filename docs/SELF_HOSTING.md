@@ -39,3 +39,9 @@ Before replacing an existing Fieldplay image, record the running image ID, immut
 Sessions and active games intentionally live in memory. A restart pauses/disconnects clients and requires a new party; it is not crash-resumable server persistence. Important device ideas/presets should be exported using the app. Back up only app-specific configuration/source artifacts and user-authorized local exports; never collect movement histories as a backup shortcut.
 
 No PostgreSQL/Redis service is provisioned merely because it appeared in the preferred stack. Durable server accounts/groups and secret-preserving recovery require the future data design in ROADMAP.md.
+
+## Production build
+
+Build with `EXPO_PUBLIC_FIELDPLAY_PRODUCTION=1` and `EXPO_PUBLIC_SIGNAL_URL=wss://fieldplay.xcenter.it`. Production defaults to dedicated play and hides developer options. A fixed endpoint also hides custom server fields and takes precedence over saved preferences and invitation endpoints. The existing loopback Compose service runs both web and dedicated game authority behind the appliance Nginx virtual host. The repository is authorized for public visibility.
+
+The native workflow supports unsigned device IPA, simulator bundle, signed APK and signed AAB. Manual iOS-only dispatch is available while Android signing is unconfigured. Native release publication remains separate from artifact builds.

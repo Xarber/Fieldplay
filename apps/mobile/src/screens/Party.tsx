@@ -217,7 +217,7 @@ export default function Party({
             />
           </Row>
           <Txt size={12} color={t.muted}>
-            Server: {server}. Joining never starts GPS sharing.
+            Joining never starts GPS sharing.
           </Txt>
         </Card>
       )}

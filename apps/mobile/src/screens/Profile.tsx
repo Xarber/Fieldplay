@@ -48,6 +48,7 @@ export default function Profile({
   theme,
   setTheme,
   developer,
+  fixedServer,
   game,
 }: {
   name: string;
@@ -56,7 +57,8 @@ export default function Profile({
   setServer: (s: string) => void;
   theme: string;
   setTheme: (s: "system" | "dark" | "light") => void;
-  developer: { unlocked: boolean; tap: () => void; lock: () => void };
+  fixedServer: boolean;
+  developer?: { unlocked: boolean; tap: () => void; lock: () => void };
   game: Game;
 }) {
   const t = useTheme();
@@ -120,7 +122,7 @@ export default function Profile({
       .catch((e) => setUpdates(e.message))
       .finally(() => setBusy(false));
   };
-  if (ideas && developer.unlocked)
+  if (ideas && developer?.unlocked)
     return (
       <View style={{ gap: 18 }}>
         <Button
@@ -250,19 +252,22 @@ export default function Profile({
             />
           ))}
         </Row>
-        <Field
-          label="Private game server"
-          value={server}
-          onChangeText={setServer}
-          autoCapitalize="none"
-          autoCorrect={false}
-          placeholder="wss://your-private-server.example"
-        />
+        {!fixedServer && (
+          <Field
+            label="Private game server"
+            value={server}
+            onChangeText={setServer}
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="wss://your-private-server.example"
+          />
+        )}
         <Disclosure title="Connecting devices and location privacy">
-          Use your own HTTPS/WSS host, including a trusted private LAN host. On
-          this computer only, ws://localhost:8787 works for development. No GPS
-          is transmitted just by opening this app. A foreground match can use
-          GPS after separate consent. Background tracking is not enabled; a
+          {fixedServer
+            ? "This build connects to its configured game server."
+            : "Use a trusted HTTPS/WSS server. For local development, use ws://localhost:8787."}{" "}
+          No GPS is transmitted just by opening this app. A foreground match can
+          use GPS after separate consent. Background tracking is not enabled; a
           match pauses when the app leaves the foreground. Server or host
           restart loses active match state safely.
         </Disclosure>
@@ -480,24 +485,31 @@ export default function Profile({
         )}
       </Disclosure>
       <Card>
-        <Button
-          label={`Fieldplay ${build.version} (${build.build})`}
-          kind="ghost"
-          onPress={developer.tap}
-        />
+        {developer ? (
+          <Button
+            label={`Fieldplay ${build.version} (${build.build})`}
+            kind="ghost"
+            onPress={developer.tap}
+          />
+        ) : (
+          <Txt>Fieldplay {build.version}</Txt>
+        )}
         <Button
           label="Source code (AGPL-3.0)"
           icon="code"
           kind="ghost"
           onPress={() => {
-            void Linking.openURL(process.env.EXPO_PUBLIC_SOURCE_URL??"https://github.com/Xarber/Fieldplay");
+            void Linking.openURL(
+              process.env.EXPO_PUBLIC_SOURCE_URL ??
+                "https://github.com/Xarber/Fieldplay",
+            );
           }}
         />
         <Txt size={11} color={t.muted}>
           Independent OpenRecode project · AGPL-3.0-only{`\n`}No ads. No
           permanent location tracking.
         </Txt>
-        {developer.unlocked && (
+        {developer?.unlocked && (
           <>
             <Badge text="DEVELOPER OPTIONS" />
             <Txt size={13}>

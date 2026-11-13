@@ -44,10 +44,15 @@ import {
   checkUpdates,
   type Release,
 } from "../src/services/releases";
+const production = process.env.EXPO_PUBLIC_FIELDPLAY_PRODUCTION === "1";
+const fixedServer =
+  process.env.EXPO_PUBLIC_SIGNAL_URL ||
+  (production ? "wss://fieldplay.xcenter.it" : undefined);
 const initialServer =
-  Platform.OS === "web" && typeof location !== "undefined"
+  fixedServer ??
+  (Platform.OS === "web" && typeof location !== "undefined"
     ? `${location.protocol === "https:" ? "wss:" : "ws:"}//${location.host}`
-    : (process.env.EXPO_PUBLIC_SIGNAL_URL ?? "ws://localhost:8787");
+    : "ws://localhost:8787");
 type Tab = "Play" | "Games" | "Groups" | "Profile";
 const nav: { name: Tab; icon: IconName }[] = [
   { name: "Play", icon: "compass" },
@@ -66,7 +71,9 @@ export default function App() {
   const [sheet, setSheet] = useState<
     "host" | "join" | "how" | "scanner" | "whatsnew" | undefined
   >();
-  const [authority, setAuthority] = useState<"peer" | "dedicated">("peer");
+  const [authority, setAuthority] = useState<"peer" | "dedicated">(
+    production ? "dedicated" : "peer",
+  );
   const [relayOnly, setRelayOnly] = useState(false);
   const [partyName, setPartyName] = useState("Weekend explorers");
   const [selectedMode, setSelectedMode] = useState<Mode>("treasure");
@@ -98,7 +105,7 @@ export default function App() {
     ])
       .then(([p, f, last]) => {
         setName(p.name);
-        setServer(p.server);
+        if (!fixedServer) setServer(p.server);
         setTheme(p.theme);
         setFavorites(f);
         setLoaded(true);
@@ -121,7 +128,7 @@ export default function App() {
           s = link.searchParams.get("server");
         if (c) {
           setCode(c);
-          if (s) setServer(s);
+          if (s && !fixedServer) setServer(s);
           setSheet("join");
         }
       } catch {
@@ -185,7 +192,7 @@ export default function App() {
   const join = () => setSheet("join");
   const joinRecent = (p: RecentParty) => {
     setCode(p.code);
-    setServer(p.server);
+    if (!fixedServer) setServer(p.server);
     setSheet("join");
   };
   const toggle = (m: Mode) => {
@@ -206,7 +213,7 @@ export default function App() {
       if (operation === "join" && invite.includes("://")) {
         const link = new URL(invite);
         invite = link.searchParams.get("code") ?? "";
-        target = link.searchParams.get("server") ?? server;
+        target = fixedServer ?? link.searchParams.get("server") ?? server;
         setServer(target);
       }
       if (operation === "join" && !/^[a-f0-9]{32}$/.test(invite))
@@ -616,7 +623,8 @@ export default function App() {
                   setServer={setServer}
                   theme={theme}
                   setTheme={setTheme}
-                  developer={developer}
+                  developer={production ? undefined : developer}
+                  fixedServer={Boolean(fixedServer)}
                   game={game}
                 />
               )}
@@ -662,21 +670,25 @@ export default function App() {
                 onChangeText={setName}
                 maxLength={32}
               />
-              <Row style={{ justifyContent: "space-between" }}>
-                <Txt size={13}>Relay-only peer privacy (requires TURN)</Txt>
-                <Switch
-                  accessibilityLabel="Relay-only peer privacy"
-                  value={relayOnly}
-                  onValueChange={setRelayOnly}
+              {!production && (
+                <Row style={{ justifyContent: "space-between" }}>
+                  <Txt size={13}>Relay-only peer privacy (requires TURN)</Txt>
+                  <Switch
+                    accessibilityLabel="Relay-only peer privacy"
+                    value={relayOnly}
+                    onValueChange={setRelayOnly}
+                  />
+                </Row>
+              )}
+              {!fixedServer && (
+                <Field
+                  label="Private server address"
+                  value={server}
+                  onChangeText={setServer}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
-              </Row>
-              <Field
-                label="Private server address"
-                value={server}
-                onChangeText={setServer}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              )}
               {sheet === "host" ? (
                 <>
                   <Field

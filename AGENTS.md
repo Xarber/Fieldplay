@@ -1,6 +1,6 @@
 # Fieldplay agent entry point
 
-Independent OpenRecode project. Never modify Pathway. AGPL-3.0-only. Read docs/INDEX.md and docs/PROJECT_SPECIFICATION.md; user UADS apply. Work on testing or isolated temporary branches. Promotion testing → beta → main. Conventional Commits. Public web hosting at https://fieldplay.xcenter.it is explicitly authorized. Repository visibility remains private; native releases, other distribution channels and paid infrastructure are not authorized.
+Independent OpenRecode project. Never modify Pathway. AGPL-3.0-only. Read docs/INDEX.md and docs/PROJECT_SPECIFICATION.md; user UADS apply. Work on testing or isolated temporary branches. Promotion testing → beta → main. Conventional Commits. Public web hosting at https://fieldplay.xcenter.it is explicitly authorized. Public GitHub repository visibility is authorized; native releases, other distribution channels and paid infrastructure are not authorized.
 
 At the start of substantial work read docs/IDEAS.json. Count pending, approved and deferred ideas; compare to the current feature. Offer relevant unrelated ideas once for now/later; do not implement them without selection. Preserve original history, link implemented ideas to verified commits and changelog. Device-local ideas are unavailable unless exported/imported; never claim automatic retrieval of those.
 
