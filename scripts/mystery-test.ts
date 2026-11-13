@@ -40,6 +40,20 @@ try {
     if (event !== "Accuse raccolte")
       await page.getByRole("button", { name: "Fase successiva" }).click();
   }
+  await page.reload();
+  await page.getByRole("tab", { name: "Games" }).click();
+  await page
+    .getByText("Apri la console riservata al master", { exact: true })
+    .click();
+  await page.getByText("Accuse e soluzione", { exact: true }).waitFor();
+  await page.getByText("Registro ritrovato", { exact: true }).waitFor();
+  await page.getByText("Inizia una nuova cena", { exact: true }).click();
+  await page.getByRole("button", { name: "Azzera la partita" }).click();
+  await page.getByText("Presentazioni e brindisi", { exact: true }).waitFor();
+  assert.equal(
+    await page.getByText("Registro ritrovato", { exact: true }).count(),
+    0,
+  );
   assert.deepEqual(errors, []);
   console.log("PASS: six character downloads and four master phases");
 } finally {

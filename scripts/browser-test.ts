@@ -41,7 +41,7 @@ try {
   await mkdir("artifacts/screenshots", { recursive: true });
   const A = await context();
   a = A.p;
-  await a.goto(`http://localhost:${staticServer.port}`);
+  await a.goto(`http://localhost:${staticServer.port}/#app`);
   await a
     .getByRole("button", { name: "Host Treasure Hunt", exact: true })
     .waitFor();
@@ -69,7 +69,7 @@ try {
   assert.equal(creds.authority, "peer");
   const B = await context();
   b = B.p;
-  await b.goto(`http://localhost:${staticServer.port}`);
+  await b.goto(`http://localhost:${staticServer.port}/#app`);
   await b
     .getByRole("button", { name: "Join your friends", exact: true })
     .click();
@@ -178,7 +178,7 @@ try {
   });
   const m = await mobile.newPage();
   m.on("pageerror", (e) => errors.push(e.message));
-  await m.goto(`http://localhost:${staticServer.port}`);
+  await m.goto(`http://localhost:${staticServer.port}/#app`);
   await m
     .getByRole("button", { name: "Host Treasure Hunt", exact: true })
     .waitFor();

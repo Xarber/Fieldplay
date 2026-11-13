@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Txt, Button, Field, Disclosure } from "../components/ui";
+import { read, write } from "../services/storage";
 import { exportFile } from "../services/files";
 
 const roles = [
@@ -49,10 +50,35 @@ const phases = [
   "Accuse e soluzione",
 ];
 export default function Mystery() {
-  const [phase, setPhase] = useState(0);
+  const [session, setSession] = useState<{ phase: number; events: string[] }>();
   const [report, setReport] = useState("");
-  const [events, setEvents] = useState<string[]>([]);
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+  useEffect(() => {
+    read("mystery-cellar-v1", { phase: 0, events: [] as string[] })
+      .then(setSession)
+      .catch(() => setError("Impossibile aprire la partita salvata."));
+  }, []);
+  async function save(next: NonNullable<typeof session>, clearReport = false) {
+    setSaving(true);
+    try {
+      await write("mystery-cellar-v1", next);
+      setSession(next);
+      if (clearReport) setReport("");
+      setError("");
+    } catch {
+      setError("Salvataggio non riuscito. Riprova.");
+    } finally {
+      setSaving(false);
+    }
+  }
+  if (!session)
+    return (
+      <Card>
+        <Txt>{error || "Caricamento Cena con delitto…"}</Txt>
+      </Card>
+    );
+  const { phase, events } = session;
   async function download(name: string, content: string) {
     try {
       await exportFile(name, content, "text/markdown");
@@ -118,10 +144,9 @@ export default function Mystery() {
         <Button
           label="Registra annuncio"
           icon="volume-2"
-          disabled={!report.trim()}
+          disabled={saving || !report.trim()}
           onPress={() => {
-            setEvents([...events, report.trim()]);
-            setReport("");
+            void save({ phase, events: [...events, report.trim()] }, true);
           }}
         />
         {events.map((event, i) => (
@@ -130,9 +155,21 @@ export default function Mystery() {
         <Button
           label="Fase successiva"
           icon="arrow-right"
-          disabled={phase === phases.length - 1}
-          onPress={() => setPhase(phase + 1)}
+          disabled={saving || phase === phases.length - 1}
+          onPress={() => void save({ phase: phase + 1, events })}
         />
+        {phase === phases.length - 1 && (
+          <Disclosure title="Inizia una nuova cena">
+            <Txt>
+              La fase e gli annunci della cena precedente saranno cancellati.
+            </Txt>
+            <Button
+              label="Azzera la partita"
+              disabled={saving}
+              onPress={() => void save({ phase: 0, events: [] }, true)}
+            />
+          </Disclosure>
+        )}
         {error && <Txt>{error}</Txt>}
       </Disclosure>
     </Card>
