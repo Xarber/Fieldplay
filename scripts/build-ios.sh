@@ -11,7 +11,7 @@ if [[ "$variant" == "unsigned" ]]; then
   archive="$RUNNER_TEMP/Fieldplay.xcarchive"
   xcodebuild -workspace "$workspace" -scheme Fieldplay -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' -archivePath "$archive" CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO archive
   app="$archive/Products/Applications/Fieldplay.app"
-  xcrun lipo -verify_arch arm64 "$app/Fieldplay"
+  xcrun lipo "$app/Fieldplay" -verify_arch arm64
   test -f "$app/main.jsbundle"
   test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$app/Info.plist")" = it.xarber.fieldplay
   package="$RUNNER_TEMP/fieldplay-ipa"
@@ -22,7 +22,7 @@ elif [[ "$variant" == "simulator" ]]; then
   derived="$RUNNER_TEMP/fieldplay-simulator"
   xcodebuild -workspace "$workspace" -scheme Fieldplay -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath "$derived" ARCHS=arm64 ONLY_ACTIVE_ARCH=NO CODE_SIGNING_ALLOWED=NO build
   app="$derived/Build/Products/Release-iphonesimulator/Fieldplay.app"
-  xcrun lipo -verify_arch arm64 "$app/Fieldplay"
+  xcrun lipo "$app/Fieldplay" -verify_arch arm64
   test -f "$app/main.jsbundle"
   ditto -c -k --sequesterRsrc --keepParent "$app" "$output/Fieldplay-v${version}-${channel}-${commit:0:8}-ios-simulator.app.zip"
 else
