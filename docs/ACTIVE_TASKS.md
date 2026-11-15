@@ -4,7 +4,7 @@ Order follows the requests in this conversation. Verified entries are retained. 
 
 | ID | Request and priority | State | Evidence, dependency and next action |
 |---|---|---|---|
-| FP-001 | Dinner mystery and local story generation · high | Implemented | `63a3b14`, `be181b1`. Host kit and browser persistence verified. Local generator passed a synthetic API test. Next verify real Ollama inference and support generated kits in the console. |
+| FP-001 | Dinner mystery and local story generation · high | Implemented | `63a3b14`, `be181b1`. Host kit and browser persistence verified. Local generator passed a synthetic API test. Versioned kit import is implemented. Real Ollama inference remains unverified. |
 | FP-002 | Other game families and end-to-end matches · high | Queued | Four outdoor modes implemented. See [roadmap](ROADMAP.md). Next implement the remaining catalogue rules and add browser flows for each supported mode. |
 | FP-003 | Public repository, production config and native workflow · high | Implemented | Public visibility verified; `e8979ca`, `eacaecd`. Both iOS artifacts passed in Actions 43590984411. Android signing missing. Native runtime verification remains open. |
 | FP-004 | Deploy simplified production app to X-Center · high | Blocked | Prior staging responded; host disk was full and later SSH and HTTPS timed out. Recheck capacity and access, then stage current commit and smoke-test before switching. |

@@ -497,3 +497,5 @@ export function tick(m: Match, now = Date.now()): Match {
   return n;
 }
 export * from "./versions";
+
+export * from "./mystery";

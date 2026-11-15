@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Card, Txt, Button, Field, Disclosure } from "../components/ui";
 import { read, write } from "../services/storage";
-import { exportFile } from "../services/files";
+import { mysteryKit, mysteryRoles, type MysteryKit } from "@fieldplay/engine";
+import { exportFile, importJSON } from "../services/files";
 
 const roles = [
   [
@@ -50,7 +51,11 @@ const phases = [
   "Accuse e soluzione",
 ];
 export default function Mystery() {
-  const [session, setSession] = useState<{ phase: number; events: string[] }>();
+  const [session, setSession] = useState<{
+    phase: number;
+    events: string[];
+    kit?: MysteryKit;
+  }>();
   const [report, setReport] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -78,7 +83,38 @@ export default function Mystery() {
         <Txt>{error || "Caricamento Cena con delitto…"}</Txt>
       </Card>
     );
-  const { phase, events } = session;
+  const { phase, events, kit } = session;
+  const custom = kit?.story;
+  const title = custom?.title ?? "Il brindisi in cantina";
+  const activeRoles =
+    custom?.characters.map((c, i) => [
+      c.name,
+      mysteryRoles[i],
+      c.background,
+      c.objective,
+      c.introduction,
+    ]) ?? roles;
+  const script = custom
+    ? [
+        custom.opening,
+        custom.discovery,
+        custom.clues.join("\n"),
+        custom.solution,
+      ]
+    : undefined;
+  const master = script?.join("\n\n") ?? brief;
+  async function loadKit() {
+    setSaving(true);
+    try {
+      const raw = await importJSON();
+      if (raw != null)
+        await save({ phase: 0, events: [], kit: mysteryKit.parse(raw) }, true);
+    } catch {
+      setError("Il file non contiene un copione Fieldplay valido.");
+    } finally {
+      setSaving(false);
+    }
+  }
   async function download(name: string, content: string) {
     try {
       await exportFile(name, content, "text/markdown");
@@ -92,48 +128,57 @@ export default function Mystery() {
       <Txt size={24} weight="700">
         Cena con delitto
       </Txt>
-      <Txt>Il brindisi in cantina · Un master e 6 giocatori</Txt>
+      <Txt>{title} · Un master e 6 giocatori</Txt>
       <Disclosure title="Apri la console riservata al master">
         <Txt>
           Consegna una scheda in privato a ciascun giocatore. Fate le
           presentazioni in personaggio e proseguite la cena. Quando emerge un
           indizio o si raggiunge un obiettivo, avvisate il master a voce.
         </Txt>
-        <Disclosure title="Copione completo e soluzione">{brief}</Disclosure>
+        {phase === 0 && events.length === 0 && (
+          <Button
+            label="Importa copione JSON"
+            icon="upload"
+            disabled={saving}
+            onPress={() => void loadKit()}
+          />
+        )}
+        <Disclosure title="Copione completo e soluzione">{master}</Disclosure>
         <Button
           label="Esporta copione master"
           icon="download"
           onPress={() =>
             void download(
               "master.md",
-              `# Il brindisi in cantina\n\n${brief}\n\n${phases.join("\n\n")}\n\n${roles.map((r) => r.join(" · ")).join("\n\n")}`,
+              `# ${title}\n\n${master}\n\n${phases.join("\n\n")}\n\n${activeRoles.map((r) => r.join(" · ")).join("\n\n")}`,
             )
           }
         />
-        {roles.map(([name, role, background, goal]) => (
-          <Button
-            key={name}
-            label={`Scarica scheda di ${name}`}
-            icon="download"
-            kind="secondary"
-            onPress={() =>
-              void download(
-                `${name}.md`,
-                `# Ti chiami ${name}\n\nRuolo: ${role}\n\n${background}\n\nNella storia il tuo obiettivo è: ${goal}\n\nPresentati senza leggere ad alta voce i tuoi segreti. Segnala al master gli eventi rilevanti.`,
-              )
-            }
-          />
-        ))}
+        {activeRoles.map(
+          ([name, role, background, goal, introduction], index) => (
+            <Button
+              key={name}
+              label={`Scarica scheda di ${name}`}
+              icon="download"
+              kind="secondary"
+              onPress={() =>
+                void download(
+                  custom ? `personaggio-${index + 1}.md` : `${name}.md`,
+                  `# Ti chiami ${name}\n\nRuolo: ${role}\n\n${background}\n\nNella storia il tuo obiettivo è: ${goal}\n\n${introduction ? `Presentati così: ${introduction}\n\n` : ""}Presentati senza leggere ad alta voce i tuoi segreti. Segnala al master gli eventi rilevanti.`,
+                )
+              }
+            />
+          ),
+        )}
         <Txt weight="700">{phases[phase]}</Txt>
         <Txt>
-          {
+          {script?.[phase] ??
             [
               "Invita tutti a presentarsi e lascia iniziare le conversazioni.",
               "Annuncia che Vittorio è stato trovato morto in cantina.",
               "Rivela gli indizi quando i giocatori li scoprono o li chiedono.",
               "Raccogli un’accusa da ciascuno, poi leggi la soluzione.",
-            ][phase]
-          }
+            ][phase]}
         </Txt>
         <Field
           label="Evento segnalato al master"
@@ -146,7 +191,7 @@ export default function Mystery() {
           icon="volume-2"
           disabled={saving || !report.trim()}
           onPress={() => {
-            void save({ phase, events: [...events, report.trim()] }, true);
+            void save({ phase, events: [...events, report.trim()], kit }, true);
           }}
         />
         {events.map((event, i) => (
@@ -156,7 +201,7 @@ export default function Mystery() {
           label="Fase successiva"
           icon="arrow-right"
           disabled={saving || phase === phases.length - 1}
-          onPress={() => void save({ phase: phase + 1, events })}
+          onPress={() => void save({ phase: phase + 1, events, kit })}
         />
         {phase === phases.length - 1 && (
           <Disclosure title="Inizia una nuova cena">

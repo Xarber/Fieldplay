@@ -3,36 +3,11 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
 
-const text = z.string().trim().min(12).max(4000);
-const character = z.object({
-  name: z.string().trim().min(2).max(60),
-  background: text,
-  objective: text,
-  introduction: text,
-});
-const story = z.object({
-  title: z.string().trim().min(4).max(100),
-  opening: text,
-  discovery: text,
-  clues: z.array(text).length(3),
-  solution: text,
-  characters: z.tuple([
-    character,
-    character,
-    character,
-    character,
-    character,
-    character,
-  ]),
-});
-const roles = [
-  "Assassino",
-  "Ispettore",
-  "Aiutante",
-  "Testimone",
-  "Ospite",
-  "Confidente",
-];
+import {
+  mysteryKit,
+  mysteryStory as story,
+  mysteryRoles as roles,
+} from "@fieldplay/engine";
 const [directory, setting = "Una cena in un rifugio di montagna"] =
   process.argv.slice(2);
 if (!directory)
@@ -71,6 +46,11 @@ const sheets = kit.characters.map(
     `# Ti chiami ${c.name}\n\nRuolo privato: ${roles[i]} (${i < 3 ? "principale" : "secondario"})\n\nPresentati così: ${c.introduction}\n\nIl tuo passato: ${c.background}\n\nNella storia il tuo obiettivo è: ${c.objective}\n\nRiferisci al master gli eventi rilevanti e tieni privata la scheda.\n`,
 );
 await Promise.all([
+  writeFile(
+    join(directory, "mystery.json"),
+    JSON.stringify(mysteryKit.parse({ version: 1, story: kit }), null, 2),
+    { mode: 0o600, flag: "wx" },
+  ),
   writeFile(
     join(directory, "master.md"),
     `# ${kit.title}\n\nRileggi storia, indizi e schede prima di distribuirle.\n\n## Presentazioni\n${kit.opening}\n\n## Scoperta\n${kit.discovery}\n\n## Indagine\n${kit.clues.map((c) => "- " + c).join("\n")}\n\n## Accuse e soluzione\n${kit.solution}\n\n${sheets.join("\n")}\n`,

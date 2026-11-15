@@ -54,6 +54,45 @@ try {
     await page.getByText("Registro ritrovato", { exact: true }).count(),
     0,
   );
+  const character = (name: string) => ({
+    name,
+    background: "Conosce la storia del rifugio.",
+    objective: "Parla con tutti gli ospiti.",
+    introduction: "Sono arrivato prima di cena.",
+  });
+  const chooser = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Importa copione JSON" }).click();
+  await (
+    await chooser
+  ).setFiles({
+    name: "mystery.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(
+      JSON.stringify({
+        version: 1,
+        story: {
+          title: "Mistero al rifugio",
+          opening: "Presentatevi prima del brindisi.",
+          discovery: "Il master legge il biglietto.",
+          clues: [
+            "Apri la prima busta.",
+            "Leggi il secondo biglietto.",
+            "Confronta le testimonianze.",
+          ],
+          solution: "Il master espone la soluzione.",
+          characters: ["Anna", "Bruno", "Carla", "Dario", "Emma", "Fabio"].map(
+            character,
+          ),
+        },
+      }),
+    ),
+  });
+  await page
+    .getByText("Mistero al rifugio · Un master e 6 giocatori")
+    .waitFor();
+  const imported = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Scarica scheda di Anna" }).click();
+  assert.equal((await imported).suggestedFilename(), "personaggio-1.md");
   assert.deepEqual(errors, []);
   console.log("PASS: six character downloads and four master phases");
 } finally {
