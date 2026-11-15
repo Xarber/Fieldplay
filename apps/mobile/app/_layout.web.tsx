@@ -35,10 +35,14 @@ export default function WebLayout() {
       setLanding(false);
     };
     sync();
+    addEventListener("hashchange", sync);
+    addEventListener("fieldplay:landing", sync);
     addEventListener("popstate", sync);
     addEventListener("message", message);
     return () => {
       removeEventListener("popstate", sync);
+      removeEventListener("hashchange", sync);
+      removeEventListener("fieldplay:landing", sync);
       removeEventListener("message", message);
     };
   }, []);
@@ -46,27 +50,6 @@ export default function WebLayout() {
     <SafeAreaProvider>
       <div style={{ display: landing ? "none" : "contents" }}>
         <Slot />
-        <a
-          href="/#welcome"
-          aria-label="Fieldplay introduction"
-          onClick={(event) => {
-            event.preventDefault();
-            history.pushState(null, "", "/#welcome");
-            setLanding(true);
-          }}
-          style={{
-            position: "fixed",
-            right: 16,
-            top: 8,
-            zIndex: 50,
-            background: "#10121B",
-            color: "#fff",
-            borderRadius: 12,
-            padding: 8,
-          }}
-        >
-          ◈ Fieldplay
-        </a>
       </div>
       {landing && (
         <iframe

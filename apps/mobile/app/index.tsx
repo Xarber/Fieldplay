@@ -297,7 +297,7 @@ export default function App() {
       ))}
     </View>
   );
-  const brand = (
+  const brandMark = (
     <Row style={{ gap: 10 }}>
       <View
         style={{
@@ -319,6 +319,25 @@ export default function App() {
       </Txt>
     </Row>
   );
+  const brand =
+    Platform.OS === "web" ? (
+      <a
+        href="/#welcome"
+        aria-label="Fieldplay introduction"
+        onClick={(event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+            return;
+          event.preventDefault();
+          history.pushState(history.state, "", "/#welcome");
+          dispatchEvent(new Event("fieldplay:landing"));
+        }}
+        style={{ textDecoration: "none" }}
+      >
+        {brandMark}
+      </a>
+    ) : (
+      brandMark
+    );
   return (
     <ThemeProvider value={t}>
       <SafeAreaView

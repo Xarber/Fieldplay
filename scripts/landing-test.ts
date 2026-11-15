@@ -5,6 +5,7 @@ const service = makeServer({ port: 0, webRoot: "apps/mobile/dist" });
 const port = await service.listen();
 const browser = await chromium.launch({
   executablePath:
+    process.env.CHROME_PATH ??
     "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
 });
@@ -15,7 +16,8 @@ try {
   await page.getByTitle("Welcome to Fieldplay").waitFor();
   await page
     .frameLocator("iframe")
-    .getByRole("link", { name: "Open web app" }).first()
+    .getByRole("link", { name: "Open web app" })
+    .first()
     .click();
   await page.getByTitle("Welcome to Fieldplay").waitFor({ state: "detached" });
   assert.equal(
@@ -23,9 +25,13 @@ try {
     "yes",
   );
   await page.reload();
-  await page.getByRole("link", { name: "Fieldplay introduction" }).click();
+  const logo = page.getByRole("link", { name: "Fieldplay introduction" });
+  await logo.waitFor();
+
+  assert.equal(await logo.count(), 1);
+  await logo.click();
   await page.getByTitle("Welcome to Fieldplay").waitFor();
-  await page.goBack();
+  await page.evaluate(() => history.back());
   await page.getByTitle("Welcome to Fieldplay").waitFor({ state: "detached" });
   const fresh = await browser.newPage();
   await fresh.goto(`http://localhost:${port}/?code=example`);
