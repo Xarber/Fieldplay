@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "uadsBaseline": {
+      "type": "string",
+      "minLength": 1
+    },
+    "manifestVersion": {
+      "type": "number",
+      "const": 1
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[\\w.-]+\\/[\\w.-]+$"
+        },
+        "profiles": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "mobile-app",
+              "web-app",
+              "backend-service"
+            ]
+          }
+        },
+        "framework": {
+          "type": "string",
+          "minLength": 1
+        },
+        "platforms": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "ios",
+              "android",
+              "web"
+            ]
+          }
+        },
+        "hosting": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "repository",
+        "profiles",
+        "framework",
+        "platforms",
+        "hosting"
+      ],
+      "additionalProperties": false
+    },
+    "requirements": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^UADS-[A-Z]+-\\d{3}$"
+          },
+          "applicability": {
+            "type": "string",
+            "const": "required"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "passed",
+              "failed",
+              "blocked"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "id",
+          "applicability",
+          "status",
+          "evidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "exceptions": {
+      "type": "array",
+      "prefixItems": [],
+      "items": false,
+      "maxItems": 0
+    }
+  },
+  "required": [
+    "uadsBaseline",
+    "manifestVersion",
+    "project",
+    "requirements",
+    "exceptions"
+  ],
+  "additionalProperties": false
+}

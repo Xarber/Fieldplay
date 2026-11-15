@@ -1,0 +1,14 @@
+{
+  "promotion": [
+    "testing",
+    "beta",
+    "main"
+  ],
+  "requiredArtifacts": [
+    "ios-unsigned",
+    "ios-simulator",
+    "android-apk",
+    "android-aab"
+  ],
+  "nativePublicationAuthorized": false
+}

@@ -1,0 +1,145 @@
+{
+  "uadsBaseline": "2026-11-14-sections-1-50",
+  "manifestVersion": 1,
+  "project": {
+    "name": "Fieldplay",
+    "repository": "Xarber/Fieldplay",
+    "profiles": [
+      "mobile-app",
+      "web-app",
+      "backend-service"
+    ],
+    "framework": "Expo / React Native / Node.js",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "hosting": "X-Center"
+  },
+  "requirements": [
+    {
+      "id": "UADS-PLAT-036",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/platforms/COMPATIBILITY.md"
+      ]
+    },
+    {
+      "id": "UADS-UI-036",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "scripts/landing-test.ts"
+      ]
+    },
+    {
+      "id": "UADS-UI-037",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "UADS-DEV-038",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/SELF_HOSTING.md"
+      ]
+    },
+    {
+      "id": "UADS-DIST-039",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "UADS-REL-040",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/RELEASES.md"
+      ]
+    },
+    {
+      "id": "UADS-DOC-041",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "uads.json"
+      ]
+    },
+    {
+      "id": "UADS-QA-042",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/TESTING.md"
+      ]
+    },
+    {
+      "id": "UADS-SEC-043",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/SECURITY.md"
+      ]
+    },
+    {
+      "id": "UADS-REL-044",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": []
+    },
+    {
+      "id": "UADS-OPS-045",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/SELF_HOSTING.md"
+      ]
+    },
+    {
+      "id": "UADS-DOC-046",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "config/uads-requirements.json"
+      ]
+    },
+    {
+      "id": "UADS-CI-047",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        ".github/workflows/uads-quality.yml"
+      ]
+    },
+    {
+      "id": "UADS-CI-048",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "scripts/validate-uads.ts"
+      ]
+    },
+    {
+      "id": "UADS-CI-049",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        ".github/workflows/uads-quality.yml"
+      ]
+    },
+    {
+      "id": "UADS-CI-050",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/UADS_REQUIREMENTS.md"
+      ]
+    }
+  ],
+  "exceptions": []
+}

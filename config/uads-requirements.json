@@ -1,0 +1,82 @@
+{
+  "UADS-PLAT-036": {
+    "title": "Expo iOS, Android and web",
+    "section": 36,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-UI-036": {
+    "title": "Web landing and original logo navigation",
+    "section": 36,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-UI-037": {
+    "title": "Onboarding and device screenshots",
+    "section": 37,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-DEV-038": {
+    "title": "Production endpoints and developer switching",
+    "section": 38,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-DIST-039": {
+    "title": "Installation hub and live releases",
+    "section": 39,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-REL-040": {
+    "title": "Release execution and synchronization",
+    "section": 40,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-DOC-041": {
+    "title": "Compliance manifest",
+    "section": 41,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-QA-042": {
+    "title": "Objective quality gates",
+    "section": 42,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-SEC-043": {
+    "title": "Trust boundaries",
+    "section": 43,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-REL-044": {
+    "title": "Release transactions and recovery",
+    "section": 44,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-OPS-045": {
+    "title": "Operational recovery",
+    "section": 45,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-DOC-046": {
+    "title": "Traceable requirements",
+    "section": 46,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-CI-047": {
+    "title": "Compliance bootstrap",
+    "section": 47,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-CI-048": {
+    "title": "Structural validation",
+    "section": 48,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-CI-049": {
+    "title": "Quality workflow",
+    "section": 49,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-CI-050": {
+    "title": "Verification evidence",
+    "section": 50,
+    "verification": "Run applicable checks and record commit-specific evidence"
+  }
+}
