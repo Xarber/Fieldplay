@@ -78,5 +78,15 @@
     "title": "Verification evidence",
     "section": 50,
     "verification": "Run applicable checks and record commit-specific evidence"
+  },
+  "UADS-CI-051": {
+    "title": "Full-scope completion reconciliation",
+    "section": 51,
+    "verification": "Reconcile original requests, implementation and executed checks against docs/ACTIVE_TASKS.md"
+  },
+  "UADS-CI-052": {
+    "title": "Persistent ordered task queue",
+    "section": 52,
+    "verification": "Reconcile original requests, implementation and executed checks against docs/ACTIVE_TASKS.md"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "uadsBaseline": "2026-11-14-sections-1-50",
+  "uadsBaseline": "2026-11-15-sections-1-52",
   "manifestVersion": 1,
   "project": {
     "name": "Fieldplay",
@@ -138,6 +138,22 @@
       "status": "pending",
       "evidence": [
         "docs/UADS_REQUIREMENTS.md"
+      ]
+    },
+    {
+      "id": "UADS-CI-051",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/ACTIVE_TASKS.md"
+      ]
+    },
+    {
+      "id": "UADS-CI-052",
+      "applicability": "required",
+      "status": "pending",
+      "evidence": [
+        "docs/ACTIVE_TASKS.md"
       ]
     }
   ],
