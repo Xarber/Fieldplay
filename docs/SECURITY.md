@@ -6,6 +6,12 @@ Private invitations are 128-bit bearer capabilities. Keep codes/QRs out of publi
 
 The player host or dedicated authority is trusted with precise GPS and secret objectives. Guests receive projections only. In P2P mode a malicious host can cheat; for competitive hidden-information games use a trusted dedicated server. Direct peers may learn network addresses; relay-only connectivity requires a configured TURN service. GPS spoofing on an untrusted client cannot be completely prevented.
 
+## Accounts and synchronization
+
+Fieldplay uses temporary guest identities for multiplayer. Room membership and reconnection use room-scoped credentials. Solo play, local presets and the dinner mystery kit do not require a persistent identity. No cross-device account synchronization is implemented.
+
+Keep these flows account-free under UADS §43. Reassess identity only for an approved feature that genuinely requires it, such as recovering persistent membership across devices. That design must identify which records need to follow the user and verify account-scoped synchronization, passkeys, external FIDO2 keys, revocation and recovery before release.
+
 ## Enforcement
 
 - Bounded Zod schemas reject unknown commands, invalid coordinates, unsupported configuration and oversized text. Presets are data, never executable code.

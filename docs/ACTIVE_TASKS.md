@@ -11,5 +11,6 @@ Order follows the requests in this conversation. Verified entries are retained. 
 | FP-005 | Use original logo to return to landing · high | Verified | `1878393`, Chromium verified logo, browser Back and invite bypass. Included in the FP-004 deployment. |
 | FP-006 | Apply newer UADS · high | In Progress | Bootstrap `c843413`. Continue registry coverage, quality evidence, onboarding and screenshots, developer server switching, installation hub and release recovery. Native publication remains outside existing authorization. |
 | FP-007 | Persistent queue and full-scope reconciliation · high | Implemented | This file tracks inherited work and blockers under §§51–52. Structural validation passed for 18 entries. Reconcile this queue after each batch and continue with the next actionable item. |
+| FP-008 | Apply revised account-free and assignment execution standards · high | Implemented | Guest credentials remain room-scoped. [Security](SECURITY.md) records the identity decision and future passkey/FIDO2 gate. Registry verification remains pending. |
 
 Independent source work proceeds while hosting and native signing dependencies are unavailable.

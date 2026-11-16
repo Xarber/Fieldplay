@@ -14,7 +14,7 @@ This roadmap preserves the wider specification without presenting unfinished fea
 
 ## Functional specification still to implement
 
-- Persistent server accounts/friend groups, tournaments and invitation revocation/rotation.
+- Friend groups, tournaments and invitation revocation/rotation. Design room-scoped and local options first. Persistent accounts require a documented core identity need under UADS §43.
 - General event zones, moving objectives, seven fully configurable visibility policies, custom roles/abilities/scoring editor beyond the validated built-in settings.
 - The remaining fourteen game families and their distinct variants. Obtain the missing original detailed concept document rather than inventing its requirements.
 - Local mDNS discovery, secret-preserving server recovery, deliberate host migration design, advanced anti-cheat and optional voice chat.
