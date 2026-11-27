@@ -42,3 +42,12 @@ The HTTPS manifest is a trust anchor and is unset in this private development bu
 The implementation has focused automated security cases, not an independent full audit. Native dependency licenses/binaries, OS permissions, physical GPS, APK installation, TURN and deployment access controls must be reviewed before wider distribution. Build-tool transitive dependency advisories are tracked in the validation report; never use a forced SDK downgrade as an unreviewed audit fix.
 
 Report vulnerabilities privately to the repository owner. Do not post location traces, invite codes or credentials in public issues.
+
+
+## X-Center ID integration in development
+
+The optional backend routes live in `services/server/src/account.ts`. Provide `XCENTER_CLIENT_ID`, `XCENTER_CLIENT_SECRET` and `XCENTER_REDIRECT_URI` only to the backend process. The proposed callback is `https://fieldplay.xcenter.it/account/callback`. Verify its exact registration in the developer portal before enabling it on X-Center. The credential pair is available to the operator through the Fieldplay Keychain record. A separate verified-app database key is required for service-owned storage.
+
+The SDK handles issuer discovery, PKCE and token validation. The backend consumes each login transaction once, checks the browser's login cookie and issues a separate opaque session cookie. Cookies are HTTP-only, HTTPS-only and scoped to the account routes. Provider access tokens stay in bounded process memory, expire with the product session and are cleared on logout or server restart. The friends route returns consented usernames and keeps provider subjects on the server. Release verification still needs the completed browser sign-in, denied or withdrawn consent, account isolation, native handoff and secure renewal. The existing guest game flow has no account dependency.
+
+On November 27, 2026, issuer discovery advertised friends and private app data. The managed SDK generated an S256 authorization URL from the issued Fieldplay configuration. A separate live authorization request for the proposed callback returned HTTP 400 with a generic error. The cause and registered callback remain unverified. Confirm the portal settings before attempting the code exchange. TypeScript and the local route boundary test passed.

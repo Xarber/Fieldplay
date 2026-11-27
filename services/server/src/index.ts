@@ -1,12 +1,24 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 import { createHmac } from "node:crypto";
+import { createAccountHandler } from "./account";
 import { makeServer } from "./server";
 const iceServers = JSON.parse(process.env.ICE_SERVERS ?? "[]");
+const { XCENTER_CLIENT_ID, XCENTER_CLIENT_SECRET, XCENTER_REDIRECT_URI } =
+  process.env;
+const accountHandler =
+  XCENTER_CLIENT_ID && XCENTER_CLIENT_SECRET && XCENTER_REDIRECT_URI
+    ? createAccountHandler({
+        clientId: XCENTER_CLIENT_ID,
+        clientSecret: XCENTER_CLIENT_SECRET,
+        redirectUri: XCENTER_REDIRECT_URI,
+      })
+    : undefined;
 const service = makeServer({
   port: Number(process.env.PORT ?? 8787),
   host: process.env.HOST ?? "127.0.0.1",
   origins: process.env.ALLOWED_ORIGINS?.split(","),
   iceServers,
+  accountHandler,
   webRoot: process.env.WEB_ROOT,
   getIceServers: (id) => {
     if (!process.env.TURN_SECRET || !process.env.TURN_URLS) return iceServers;

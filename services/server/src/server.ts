@@ -54,12 +54,14 @@ export function makeServer(
     getIceServers?: (id: string) => unknown[];
     webRoot?: string;
     allowInsecure?: boolean;
+    accountHandler?: ReturnType<typeof import("./account").createAccountHandler>;
   } = {},
 ) {
   const connections = new Map<string, { at: number; count: number }>();
   const rooms = new Map<string, Room>();
   const peers = new Map<WebSocket, { room: Room; session: Session }>();
   const server: Server = createServer(async (req, res) => {
+    if (await options.accountHandler?.(req, res)) return;
     if (req.url === "/health") {
       res.writeHead(200, {
         "Content-Type": "application/json",

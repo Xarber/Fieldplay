@@ -6,6 +6,8 @@
   "license": "AGPL-3.0-only",
   "dependencies": {
     "@fieldplay/engine": "*",
+    "@xcenter-id/client": "file:../../vendor/xcenter-id/xcenter-id-client-0.7.0.tgz",
+    "@xcenter-id/server": "file:../../vendor/xcenter-id/xcenter-id-server-0.7.0.tgz",
     "ws": "^8.18.3"
   }
 }
