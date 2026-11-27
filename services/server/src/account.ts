@@ -23,7 +23,7 @@ function setCookie(
 ) {
   res.appendHeader(
     "Set-Cookie",
-    `${key}=${value}; Path=/account; Max-Age=${seconds}; HttpOnly; Secure; SameSite=Lax`,
+    `${key}=${value}; Path=/api/account; Max-Age=${seconds}; HttpOnly; Secure; SameSite=Lax`,
   );
 }
 
@@ -35,11 +35,11 @@ export function createAccountHandler(config: {
   const callback = new URL(config.redirectUri);
   if (
     callback.protocol !== "https:" ||
-    callback.pathname !== "/account/callback" ||
+    callback.pathname !== "/api/account/callback" ||
     callback.search ||
     callback.hash
   )
-    throw new Error("Fieldplay requires an exact HTTPS /account/callback URL");
+    throw new Error("Fieldplay requires an exact HTTPS /api/account/callback URL");
 
   let oidc: ReturnType<typeof createXCenterOIDC> | undefined;
   const provider = () =>
@@ -63,9 +63,9 @@ export function createAccountHandler(config: {
   >();
 
   return async (req: IncomingMessage, res: ServerResponse) => {
-    if (!req.url?.startsWith("/account/")) return false;
+    if (!req.url?.startsWith("/api/account/")) return false;
     const url = new URL(callback.origin + req.url);
-    if (!url.pathname.startsWith("/account/")) return false;
+    if (!url.pathname.startsWith("/api/account/")) return false;
     res.setHeader("Cache-Control", "no-store");
     res.setHeader("Referrer-Policy", "no-referrer");
     const json = (status: number, body: object) => {
@@ -86,7 +86,7 @@ export function createAccountHandler(config: {
 
     try {
       switch (`${req.method} ${url.pathname}`) {
-        case "GET /account/login": {
+        case "GET /api/account/login": {
           if (logins.size >= 256) {
             json(503, { error: "Sign-in is busy" });
             break;
@@ -105,7 +105,7 @@ export function createAccountHandler(config: {
           redirect(authorization.href);
           break;
         }
-        case "GET /account/callback": {
+        case "GET /api/account/callback": {
           const id = cookie(req, loginCookie) ?? "";
           const transaction = logins.get(id);
           logins.delete(id);
@@ -134,10 +134,10 @@ export function createAccountHandler(config: {
           redirect("/#app");
           break;
         }
-        case "GET /account/session":
+        case "GET /api/account/session":
           json(200, { profile: session?.profile ?? null });
           break;
-        case "GET /account/friends": {
+        case "GET /api/account/friends": {
           if (!session) {
             json(401, { error: "Sign in to see friends" });
             break;
@@ -150,7 +150,7 @@ export function createAccountHandler(config: {
           json(200, { friends: friends.map(({ username }) => ({ username })) });
           break;
         }
-        case "POST /account/logout":
+        case "POST /api/account/logout":
           if (req.headers.origin !== callback.origin) {
             json(403, { error: "Invalid origin" });
             break;
@@ -164,7 +164,7 @@ export function createAccountHandler(config: {
       }
     } catch (error) {
       if (
-        url.pathname === "/account/friends" &&
+        url.pathname === "/api/account/friends" &&
         typeof error === "object" &&
         error &&
         "status" in error &&
@@ -176,7 +176,7 @@ export function createAccountHandler(config: {
         });
         return true;
       }
-      json(url.pathname === "/account/callback" ? 400 : 502, {
+      json(url.pathname === "/api/account/callback" ? 400 : 502, {
         error: "X-Center ID sign-in could not be completed",
       });
     }
